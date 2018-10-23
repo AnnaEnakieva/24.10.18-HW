@@ -119,3 +119,58 @@ const bool operator >= (const rational& n, const rational& m);
 const bool operator != (const rational& n, const rational& m);
 }
 
+
+std::ostream & operator << (std::ostream &os, const rational &A)
+{
+    os << A.m << "/" << A.n;
+    return os;
+}
+
+int main() {
+	int argh1,argh2,argh3, argh4;
+	cin >> argh1 >> argh2 >> argh3 >>argh4;
+	cout << "\n";
+
+    rational A(argh1, argh2), B(argh3, argh4);
+    cout << "A = " << A << "\n" << "B = " << B << "\n";
+    cout << "\n";
+
+    cout << "A + B = " << A + B << "\n";
+    cout << "A - B = " << A - B << "\n";
+    cout << "A * B = " << A * B << "\n";
+    cout << "A / B = " << A / B << "\n";
+    cout << "\n";
+
+
+    if (A==B)
+    {
+        cout << A << " == " << B << "\n";
+    };
+
+    if (A!=B)
+    {
+        cout << A << " != " << B << "\n";
+    };
+
+    if (A > B)
+    {
+        cout << A << " > " << B << "\n";
+    };
+
+    if (A >= B)
+    {
+        cout << A << " >= " << B << "\n";
+    };
+
+    if (A < B)
+    {
+        cout << A << " < " << B << "\n";
+    };
+
+    if (A <= B)
+    {
+        cout << A << " <= " << B << "\n";
+    };
+
+    return 0;
+}
