@@ -7,132 +7,420 @@
 На примере рациональных чисел посмотрите когда именно вызываются методы. 
 Для этого добавьте отладочную печать работающую при их использовании. Например, “Copying Constructor is working”. //*
 
+#include "stdafx.h"
+
+ 
 
 #include <math.h>
-#include <numerik>	
+
 #include <iostream>
+
 #include <string>
-struct rational {
-int m;
-int n;
-rational(int a, int b)
+
+#include <numeric>
+
+ 
+
+using namespace std;
+
+ 
+
+/* Standard C Function: Greatest Common Divisor */
+
+int
+
+gcd(int a, int b)
+
 {
-m = a / gcd(a, b);
-n = b / gcd(a, b);
-}
-rational(int a)
-{
-m = a;
-n = 1;
-}
-rational(const rational & A)
-{
-m = A.m;
-n = A.n;
-}
-rational operator= (rational & A)
-{
-m = A.m;
-n = A.n;
-return *this;
-}
-rational & operator *=(rational & A)
-{
-m *= A.m;
-n *= A.n;
-int d = gcd(m, n);
-m /= d;
-n /= d;
-return *this;
-}
-rational & operator*=(int &a)
-{
-return (*this) *= int(rational(a));
-}
-rational operator *(rational A, rational & B)
-{
-return A *= B;
-}
-bool operator ==(rational & A, rational B)
-{
-return ((A.m == B.m) && (A.n == B.n);
+
+       int c;
+
+       while (a != 0) {
+
+              c = a; a = b % a;  b = c;
+
+       }
+
+       return b;
+
 }
 
-bool operator !=(rational const & A, rational const & B)
+ 
+
+ 
+
+struct rational
+
 {
-return !( A == B);
-}
-bool operator <(rational const & A, rational const & B)
+
+       int m;
+
+       int n;
+
+ 
+
+       // internal function for reduction
+
+       void reduce()
+
+       {
+
+              int d = gcd(m, n);
+
+              m /= d;
+
+              n /= d;
+
+       }
+
+ 
+
+       // m defines the fraction's sign
+
+       void fix_sign()
+
+       {
+
+              // check the sign
+
+              if (m < 0 && n < 0) {
+
+                     m = -m;
+
+                     n = -n;
+
+              }
+
+              // m defines fraction's sign
+
+              else if (n < 0)
+
+              {
+
+                     m = -m;
+
+                     n = -n;
+
+              }
+
+       }
+
+ 
+
+       rational(int a, int b)
+
+       {
+
+              m = a;
+
+              n = b;
+
+              // check the sign
+
+              fix_sign();
+
+              reduce();
+
+       }
+
+       rational(int a)
+
+       {
+
+              m = a;
+
+              n = 1;
+
+       }
+
+       rational(const rational & A)
+
+       {
+
+              m = A.m;
+
+              n = A.n;
+
+       }
+
+       rational operator= (rational & A)
+
+       {
+
+              m = A.m;
+
+              n = A.n;
+
+              return *this;
+
+       }
+
+ 
+
+       rational operator+(rational& A)
+
+       {
+
+              m = m * A.n + A.m * n;
+
+              n *= A.n;
+
+              reduce();
+
+              return *this;
+
+       }
+
+ 
+
+       rational operator-(rational& A)
+
+       {
+
+              m = m * A.n - A.m * n;
+
+              n *= A.n;
+
+              reduce();
+
+              return *this;
+
+       }
+
+ 
+
+       rational operator/(rational& A)
+
+       {
+
+              m *= A.n;
+
+              n *= A.m;
+
+              fix_sign();
+
+              reduce();
+
+              return *this;
+
+       }
+
+ 
+
+       rational operator*(rational& A)
+
+       {
+
+              m *= A.m;
+
+              n *= A.n;
+
+              reduce();
+
+              return *this;
+
+       }
+
+ 
+
+       rational & operator*=(int &a)
+
+       {
+
+              m *= a;
+
+              reduce();
+
+              return *this;
+
+       }
+
+ 
+
+       rational & operator *=(rational & A)
+
+       {
+
+              m *= A.m;
+
+              n *= A.n;
+
+              reduce();
+
+              return *this;
+
+       }
+
+ 
+
+       bool operator==(rational & A )
+
+       {
+
+              return ((m == A.m) && (n == A.n));
+
+       }
+
+ 
+
+       bool operator!=(rational const & A)
+
+       {
+
+              return ((m != A.m) || (n != A.n));
+
+       }
+
+ 
+
+       bool operator<(rational const & A)
+
+       {
+
+              return ((m * A.n) < (A.m * n));
+
+       }
+
+ 
+
+       bool operator >(rational const & A)
+
+       {
+
+              return ((m * A.n) > (A.m * n));
+
+       }
+
+ 
+
+       bool operator <=(rational const & A)
+
+       {
+
+              return ((m * A.n) <= (A.m * n));
+
+       }
+
+       bool operator >=(rational const & A)
+
+       {
+
+              return ((m * A.n) >= (A.m * n));
+
+       }
+
+ 
+
+};
+
+ 
+
+ 
+
+std::ostream& operator<< (std::ostream& stream, const rational& A)
+
 {
-return A<B;
-}
-bool operator >((rational const & A, rational const & B)
-{
-return B < A;
+
+       stream << A.m << "/" << A.n;
+
+       return stream;
+
 }
 
-bool operator <=(rational const & A, rational const & B)
-{
-return !(A > B);
-}
-bool operator >=(rational const & A, rational const & B)
-{
-return !(A < B);
-}
-}
-
-
-std::ostream & operator << (std::ostream &os, const rational &A)
-{
-    os << A.m << "/" << A.n;
-    return os;
-}
+ 
 
 int main() {
-	int argh1,argh2,argh3, argh4;
-	cin >> argh1 >> argh2 >> argh3 >>argh4;
-	cout << "\n";
 
-    rational A(argh1, argh2), B(argh3, argh4);
-    cout << "A = " << A << "\n" << "B = " << B << "\n";
-    cout << "\n";
+       int argh1,argh2,argh3, argh4;
 
-    cout << "A + B = " << A + B << "\n";
-    cout << "A - B = " << A - B << "\n";
-    cout << "A * B = " << A * B << "\n";
-    cout << "A / B = " << A / B << "\n";
-    cout << "\n";
+       cin >> argh1 >> argh2 >> argh3 >>argh4;
 
+       cout << "\n";
 
-    if (A==B)
-    {
-        cout << A << " == " << B << "\n";
-    };
+ 
 
-    if (A!=B)
-    {
-        cout << A << " != " << B << "\n";
-    };
+       rational A(argh1, argh2), B(argh3, argh4);
 
-    if (A > B)
-    {
-        cout << A << " > " << B << "\n";
-    };
+       cout << "A = " << A << "\n" << "B = " << B << "\n";
 
-    if (A >= B)
-    {
-        cout << A << " >= " << B << "\n";
-    };
+       cout << "\n";
 
-    if (A < B)
-    {
-        cout << A << " < " << B << "\n";
-    };
+ 
 
-    if (A <= B)
-    {
-        cout << A << " <= " << B << "\n";
-    };
+       cout << "A + B = " << A + B << "\n";
 
-    return 0;
-}
+       cout << "A - B = " << A - B << "\n";
+
+       cout << "A * B = " << A * B << "\n";
+
+       cout << "A / B = " << A / B << "\n";
+
+       cout << "\n";
+
+ 
+
+ 
+
+       if (A==B)
+
+       {
+
+              cout << A << " == " << B << "\n";
+
+       };
+
+ 
+
+       if (A!=B)
+
+       {
+
+              cout << A << " != " << B << "\n";
+
+       };
+
+ 
+
+       if (A > B)
+
+       {
+
+              cout << A << " > " << B << "\n";
+
+       };
+
+ 
+
+       if (A >= B)
+
+       {
+
+              cout << A << " >= " << B << "\n";
+
+       };
+
+ 
+
+       if (A < B)
+
+       {
+
+              cout << A << " < " << B << "\n";
+
+       };
+
+ 
+
+       if (A <= B)
+
+       {
+
+              cout << A << " <= " << B << "\n";
+
+       };
+
+ 
+
+       return 0;
+
+}  
