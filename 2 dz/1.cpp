@@ -8,7 +8,8 @@
 Для этого добавьте отладочную печать работающую при их использовании. Например, “Copying Constructor is working”. //*
 
 
-#include "math.h"
+#include <math.h>
+#include <numerik>	
 #include <iostream>
 #include <string>
 struct rational {
@@ -78,45 +79,6 @@ bool operator >=(rational const & A, rational const & B)
 {
 return !(A < B);
 }
-}
-
- 
-
- 
-
-#include <iostream>
-
-
-struct rational
-{
-int A;
-int B;
-rational();
-rational(int A, int B = 1);
-rational(const rational& r);
-~rational();
-
-rational& operator = (const rational& r);
-
-rational& operator += (const rational& r);
-rational& operator -= (const rational& r);
-rational& operator *= (const rational& r);
-rational& operator /= (const rational& r);
-
-};
-int main()
-{
-rational operator * (rational& n, rational& m);
-rational operator - (rational& n, rational& m);
-rational operator + (rational& n, rational& m);
-rational operator / (rational& n, rational& m);
-
-const bool operator < (const rational& n, const rational& m);
-const bool operator == (const rational& n, const rational& m);
-const bool operator <= (const rational& n, const rational& m);
-const bool operator > (const rational& n, const rational& m);
-const bool operator >= (const rational& n, const rational& m);
-const bool operator != (const rational& n, const rational& m);
 }
 
 
